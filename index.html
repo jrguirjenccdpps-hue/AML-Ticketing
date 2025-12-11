@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AML Ticketing — Submit</title>
+
+<style>
+  body { font-family: Segoe UI, Arial; background:#eef2f7; margin:0; padding:28px; }
+  .card { max-width:760px; margin:0 auto; background:#fff; padding:28px; border-radius:14px; 
+          box-shadow:0 6px 28px rgba(0,0,0,0.07); }
+
+  h1 { text-align:center; color:#003366; margin:0 0 20px; font-size:28px; font-weight:700; }
+
+  label { display:block; margin-top:14px; font-weight:600; color:#333; font-size:14px; }
+
+  input, select, textarea {
+    width:100%; padding:12px; margin-top:6px;
+    border:1px solid #cbd5e1; border-radius:8px; font-size:14px;
+    background:#f9fafb;
+  }
+
+  .row { display:flex; gap:16px; }
+  .col { flex:1; }
+
+  button {
+    background:#005c3c; color:#fff; border:none;
+    padding:14px; border-radius:8px; cursor:pointer;
+    margin-top:20px; width:100%; font-size:16px;
+    transition:0.2s; font-weight:600;
+  }
+
+  button.loading { opacity:0.6; pointer-events:none; }
+  button:hover { opacity:0.9; }
+
+  .status { margin-top:14px; font-weight:700; text-align:center; font-size:15px; }
+
+  pre {
+    background:#f1f5f9; padding:14px; border-radius:8px;
+    max-height:240px; overflow-y:auto; font-size:13px;
+    border:1px solid #e2e8f0;
+  }
+
+  @media (max-width:700px) { .row { flex-direction:column; } }
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h1>AML Ticketing Form</h1>
+
+  <form id="ticketForm" enctype="multipart/form-data" method="POST">
+
+    <label for="customerName">Customer Name</label>
+    <input id="customerName" name="customerName" type="text" required>
+
+    <label for="branchName">Branch Name</label>
+    <input id="branchName" name="branchName" type="text" required>
+
+    <div class="row">
+      <div class="col">
+        <label for="area">Area</label>
+        <select id="area" name="area" required>
+          <option value="">Select Area</option>
+          <!-- (Your Area Options Here — unchanged for brevity) -->
+          <option>BAG-GUET</option>
+          <option>CAGAYAN</option>
+          <option>ILOCOS NORTE</option>
+          <option>ILOCOS SUR-ABRA</option>
+          <option>ISABELA</option>
+          <option>LA UNION</option>
+          <option>PANGASINAN EAST</option>
+          <option>PANGASINAN WEST</option>
+          <option>NUEVA VIZCAYA</option>
+          <option>PAMPANGA</option>
+          <option>TARLAC</option>
+          <option>ZAMBAT</option>
+          <option>NUEVA ECIJA</option>
+          <option>NUEVA ECIJA - AURORA</option>
+          <option>SOUTH BULACAN</option>
+          <option>NORTH BULACAN</option>
+          <option>Northwestern Manila</option>
+          <option>Central Western Manila</option>
+          <option>Northeastern Manila</option>
+          <option>Southwestern Manila</option>
+          <option>Southeastern Manila</option>
+          <option>CAVITE WEST</option>
+          <option>CAVITE SOUTH</option>
+          <option>CAVITE NORTH</option>
+          <option>RIZAL</option>
+          <option>LAGUNA WEST</option>
+          <option>LAGUNA EAST</option>
+          <option>PALAWAN</option>
+          <option>ALCASOR</option>
+          <option>BATANGAS EAST</option>
+          <option>BATANGAS WEST</option>
+          <option>CAMARINES</option>
+          <option>MASBATE</option>
+          <option>MINDORO</option>
+          <option>QUEMAR</option>
+          <option>AKLAN</option>
+          <option>ANTIQUE</option>
+          <option>CAPIZRON</option>
+          <option>ILOILO NORTH</option>
+          <option>ILOILO SOUTH</option>
+          <option>NEGOCC NORTH</option>
+          <option>NEGOCC SOUTH</option>
+          <option>ORNEG</option>
+          <option>BOHOL</option>
+          <option>CEBU NORTH</option>
+          <option>CEBU SOUTH</option>
+          <option>CEBU WEST</option>
+          <option>CEBU CENTRAL</option>
+          <option>NOLEY</option>
+          <option>SAMAR EAST</option>
+          <option>SAMAR WEST</option>
+          <option>SOLEY</option>
+          <option>BUKIDNON</option>
+          <option>CDO CITY PLUS</option>
+          <option>NORMIN WEST</option>
+          <option>ZAMBOANGA CITY PLUS</option>
+          <option>ZAMBOPEN NORTH</option>
+          <option>ZAMBOPEN SOUTH</option>
+          <option>CARAGA EAST</option>
+          <option>CARAGA WEST</option>
+          <option>DAVAO CITY PLUS</option>
+          <option>NORTHEAST DAVO</option>
+          <option>COTABATO NORTH</option>
+          <option>MAGUINDANAO PLUS</option>
+          <option>SOCSKSARGEN EAST</option>
+          <option>SOCSKSARGEN WEST</option>
+        </select>
+      </div>
+
+      <div class="col">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="">Select Category</option>
+          <option>Business Permits</option>
+          <option>Valid ID</option>
+          <option>Mayors Permit</option>
+          <option>Barangay Permit</option>
+          <option>DTI Permit</option>
+          <option>Sec Permit</option>
+          <option>Others</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority">
+          <option>Low</option>
+          <option selected>Medium</option>
+          <option>High</option>
+        </select>
+      </div>
+
+      <div class="col">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option selected>New</option>
+          <option>In Progress</option>
+          <option>Resolved</option>
+          <option>Closed</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="assignee">Assignee</label>
+    <input id="assignee" name="assignee" type="text" placeholder="Enter assignee name">
+
+    <label for="attachments">Attachments (images / PDF, max 10MB each)</label>
+    <input id="attachments" name="attachments" type="file" multiple accept=".pdf,image/*">
+
+    <button type="submit" id="submitBtn">Submit Ticket</button>
+    <div id="statusMsg" class="status"></div>
+  </form>
+
+  <h3 style="margin-top:28px; color:#003366;">Live Preview of Form Data</h3>
+  <pre id="preview"></pre>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyvEhKm92_OD9BY5taFzD5DQ39B-qwgQzgG-SGJzj8yFtDI0Wp5CaRtMNKsE40KoMOR/exec"; // ← Replace with your actual deployed URL
+
+const form = document.getElementById("ticketForm");
+const attachmentsInput = document.getElementById("attachments");
+const statusMsg = document.getElementById("statusMsg");
+const preview = document.getElementById("preview");
+const submitBtn = document.getElementById("submitBtn");
+
+/* --- Live Preview Function --- */
+function updatePreview() {
+  const fd = new FormData(form);
+  const obj = {};
+
+  for (let [key, value] of fd.entries()) obj[key] = value;
+
+  obj.files = [];
+  for (let f of attachmentsInput.files) {
+    obj.files.push({ name: f.name, sizeMB: (f.size / 1024 / 1024).toFixed(2) });
+  }
+
+  preview.textContent = JSON.stringify(obj, null, 2);
+}
+
+form.addEventListener("input", updatePreview);
+attachmentsInput.addEventListener("change", updatePreview);
+updatePreview();
+
+/* --- Submit Handler --- */
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+
+  statusMsg.textContent = "Submitting...";
+  statusMsg.style.color = "gray";
+  submitBtn.classList.add("loading");
+  submitBtn.textContent = "Submitting...";
+
+  const fd = new FormData(form);
+
+  try {
+    // Validate file sizes
+    for (let f of attachmentsInput.files) {
+      if (f.size > 10 * 1024 * 1024)
+        throw new Error("File too large: " + f.name);
+
+      fd.append("file", f, f.name);
+    }
+
+    const res = await fetch(WEB_APP_URL, { method: "POST", body: fd });
+    const json = await res.json();
+
+    if (!json.success) throw new Error(json.message);
+
+    statusMsg.textContent = "✓ Ticket created: " + json.ticketId;
+    statusMsg.style.color = "green";
+
+    form.reset();
+    updatePreview();
+
+  } catch (err) {
+    statusMsg.textContent = "❌ " + err.message;
+    statusMsg.style.color = "red";
+  }
+
+  submitBtn.classList.remove("loading");
+  submitBtn.textContent = "Submit Ticket";
+});
+</script>
+
+</body>
+</html>
