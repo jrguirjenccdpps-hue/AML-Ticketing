@@ -6,42 +6,118 @@
 <title>AML Ticketing — Submit</title>
 
 <style>
-  body { font-family: Segoe UI, Arial; background:#eef2f7; margin:0; padding:28px; }
-  .card { max-width:760px; margin:0 auto; background:#fff; padding:28px; border-radius:14px; 
-          box-shadow:0 6px 28px rgba(0,0,0,0.07); }
+  /* --- General Styles --- */
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 30px;
+    color: #333;
+  }
 
-  h1 { text-align:center; color:#003366; margin:0 0 20px; font-size:28px; font-weight:700; }
+  .card {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+  }
+  .card:hover { transform: translateY(-4px); }
 
-  label { display:block; margin-top:14px; font-weight:600; color:#333; font-size:14px; }
+  h1 {
+    text-align: center;
+    color: #004466;
+    font-size: 30px;
+    margin-bottom: 28px;
+    font-weight: 700;
+  }
+
+  label {
+    display: block;
+    margin-top: 16px;
+    font-weight: 600;
+    font-size: 14px;
+  }
 
   input, select, textarea {
-    width:100%; padding:12px; margin-top:6px;
-    border:1px solid #cbd5e1; border-radius:8px; font-size:14px;
-    background:#f9fafb;
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #d1d9e0;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #f9fafb;
+    transition: border 0.2s, box-shadow 0.2s;
   }
 
-  .row { display:flex; gap:16px; }
-  .col { flex:1; }
+  input:focus, select:focus, textarea:focus {
+    border-color: #005c3c;
+    box-shadow: 0 0 6px rgba(0,92,60,0.2);
+    outline: none;
+  }
 
+  .row {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .col { flex: 1; }
+  @media (max-width:700px) { .row { flex-direction: column; } }
+
+  /* --- Button --- */
   button {
-    background:#005c3c; color:#fff; border:none;
-    padding:14px; border-radius:8px; cursor:pointer;
-    margin-top:20px; width:100%; font-size:16px;
-    transition:0.2s; font-weight:600;
+    background: #005c3c;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 24px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
   }
 
-  button.loading { opacity:0.6; pointer-events:none; }
-  button:hover { opacity:0.9; }
-
-  .status { margin-top:14px; font-weight:700; text-align:center; font-size:15px; }
-
-  pre {
-    background:#f1f5f9; padding:14px; border-radius:8px;
-    max-height:240px; overflow-y:auto; font-size:13px;
-    border:1px solid #e2e8f0;
+  button:hover { opacity: 0.9; transform: scale(1.02); }
+  button.loading {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  button.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #fff;
+    border-top: 2px solid #004466;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
   }
 
-  @media (max-width:700px) { .row { flex-direction:column; } }
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+
+  /* --- Status Message --- */
+  .status {
+    margin-top: 18px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .status.show { opacity: 1; }
+
 </style>
 </head>
 
@@ -50,7 +126,6 @@
   <h1>AML Ticketing Form</h1>
 
   <form id="ticketForm" enctype="multipart/form-data" method="POST">
-
     <label for="customerName">Customer Name</label>
     <input id="customerName" name="customerName" type="text" required>
 
@@ -62,7 +137,6 @@
         <label for="area">Area</label>
         <select id="area" name="area" required>
           <option value="">Select Area</option>
-          <!-- (Your Area Options Here — unchanged for brevity) -->
           <option>BAG-GUET</option>
           <option>CAGAYAN</option>
           <option>ILOCOS NORTE</option>
@@ -177,47 +251,23 @@
     <button type="submit" id="submitBtn">Submit Ticket</button>
     <div id="statusMsg" class="status"></div>
   </form>
-
-  <h3 style="margin-top:28px; color:#003366;">Live Preview of Form Data</h3>
-  <pre id="preview"></pre>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyvEhKm92_OD9BY5taFzD5DQ39B-qwgQzgG-SGJzj8yFtDI0Wp5CaRtMNKsE40KoMOR/exec"; // ← Replace with your actual deployed URL
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyvEhKm92_OD9BY5taFzD5DQ39B-qwgQzgG-SGJzj8yFtDI0Wp5CaRtMNKsE40KoMOR/exec";
 
 const form = document.getElementById("ticketForm");
 const attachmentsInput = document.getElementById("attachments");
 const statusMsg = document.getElementById("statusMsg");
-const preview = document.getElementById("preview");
 const submitBtn = document.getElementById("submitBtn");
 
-/* --- Live Preview Function --- */
-function updatePreview() {
-  const fd = new FormData(form);
-  const obj = {};
-
-  for (let [key, value] of fd.entries()) obj[key] = value;
-
-  obj.files = [];
-  for (let f of attachmentsInput.files) {
-    obj.files.push({ name: f.name, sizeMB: (f.size / 1024 / 1024).toFixed(2) });
-  }
-
-  preview.textContent = JSON.stringify(obj, null, 2);
-}
-
-form.addEventListener("input", updatePreview);
-attachmentsInput.addEventListener("change", updatePreview);
-updatePreview();
-
-/* --- Submit Handler --- */
 form.addEventListener("submit", async (ev) => {
   ev.preventDefault();
 
-  statusMsg.textContent = "Submitting...";
+  statusMsg.classList.remove("show");
   statusMsg.style.color = "gray";
+  statusMsg.textContent = "Submitting...";
   submitBtn.classList.add("loading");
-  submitBtn.textContent = "Submitting...";
 
   const fd = new FormData(form);
 
@@ -226,7 +276,6 @@ form.addEventListener("submit", async (ev) => {
     for (let f of attachmentsInput.files) {
       if (f.size > 10 * 1024 * 1024)
         throw new Error("File too large: " + f.name);
-
       fd.append("file", f, f.name);
     }
 
@@ -239,7 +288,6 @@ form.addEventListener("submit", async (ev) => {
     statusMsg.style.color = "green";
 
     form.reset();
-    updatePreview();
 
   } catch (err) {
     statusMsg.textContent = "❌ " + err.message;
@@ -248,8 +296,8 @@ form.addEventListener("submit", async (ev) => {
 
   submitBtn.classList.remove("loading");
   submitBtn.textContent = "Submit Ticket";
+  statusMsg.classList.add("show");
 });
 </script>
-
 </body>
 </html>
